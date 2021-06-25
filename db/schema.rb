@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_25_143254) do
+ActiveRecord::Schema.define(version: 2021_06_25_145959) do
 
   create_table "claims", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
@@ -23,6 +23,20 @@ ActiveRecord::Schema.define(version: 2021_06_25_143254) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_settings_on_user_id"
+  end
+
+  create_table "shoppings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "price", null: false
+    t.text "description"
+    t.datetime "date", null: false
+    t.bigint "user_id", null: false
+    t.bigint "shop_id", null: false
+    t.bigint "claim_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["claim_id"], name: "index_shoppings_on_claim_id"
+    t.index ["shop_id"], name: "index_shoppings_on_shop_id"
+    t.index ["user_id"], name: "index_shoppings_on_user_id"
   end
 
   create_table "shops", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -64,5 +78,8 @@ ActiveRecord::Schema.define(version: 2021_06_25_143254) do
   end
 
   add_foreign_key "settings", "users"
+  add_foreign_key "shoppings", "claims"
+  add_foreign_key "shoppings", "shops"
+  add_foreign_key "shoppings", "users"
   add_foreign_key "shops", "users"
 end
