@@ -13,8 +13,11 @@
 ActiveRecord::Schema.define(version: 2021_06_25_145959) do
 
   create_table "claims", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.boolean "is_line_notice", default: false
+    t.bigint "user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_claims_on_user_id"
   end
 
   create_table "settings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -29,6 +32,7 @@ ActiveRecord::Schema.define(version: 2021_06_25_145959) do
     t.integer "price", null: false
     t.text "description"
     t.datetime "date", null: false
+    t.boolean "is_line_notice", default: false, null: false
     t.bigint "user_id", null: false
     t.bigint "shop_id", null: false
     t.bigint "claim_id"
@@ -77,6 +81,7 @@ ActiveRecord::Schema.define(version: 2021_06_25_145959) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  add_foreign_key "claims", "users"
   add_foreign_key "settings", "users"
   add_foreign_key "shoppings", "claims"
   add_foreign_key "shoppings", "shops"
