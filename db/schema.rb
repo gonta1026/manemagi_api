@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 2021_06_25_145959) do
 
   create_table "settings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.boolean "is_use_line", default: false, null: false
+    t.string "line_notice_token"
     t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

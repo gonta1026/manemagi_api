@@ -1,6 +1,12 @@
 class ClaimsController < ApplicationController
+  before_action :authenticate_user!, only: [:index, :create]
+
+  def index
+    claims = Claim.all
+    render json: { status: 'SUCCESS', data: claims }
+  end
+  
   def create
-    # binding.pry
     shoppings = Shopping.all #sampleとしてallにしている。
     post_merge_shoppings = post_params.merge(shoppings: shoppings)
     claims = Claim.new(post_merge_shoppings)
