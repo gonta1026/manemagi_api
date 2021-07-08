@@ -1,4 +1,5 @@
 class ShoppingsController < ApplicationController
+  require "./app/utils/format_date"
   before_action :authenticate_user!, only: [:index, :create]
   def index
     shoppings = Shopping.all
@@ -7,7 +8,13 @@ class ShoppingsController < ApplicationController
   
   def create
     shopping = Shopping.new(post_params)
+    @setting = Setting.first
     if shopping.save
+      wd = ["日", "月", "火", "水", "木", "金", "土"]
+      time = Time.now
+      shopping_date = FormatDate::format_yyyy_mm_dd_wd(shopping[:date])
+      # NOTE Lineの通知
+      @setting.shopping_line_notice(shopping_date, shopping[:price], shopping.shop.name, shopping[:description])
       render json: { status: 'SUCCESS', data: shopping }
     else
       render json: { status: 'ERROR', data: shopping.errors }
