@@ -1,17 +1,25 @@
+
 class SettingsController < ApplicationController
   before_action :authenticate_user!, only: [:index, :create]
-  
+
   def index
-    settings = Setting.all
-    render json: { status: 'SUCCESS', data: settings }
+    setting = Setting.first
+    render json: { status: 'SUCCESS', data: setting }
   end
   
   def create
-    setting = Setting.new(post_params)
-    if setting.save
-      render json: { status: 'SUCCESS', data: setting }
+    @setting = Setting.new(post_params)
+    if @setting.save
+      connection = Faraday.new(Constants::NOTIFY_API_URL)
+      res = @setting.first_line_notice(params[:line_notice_token])
+      if res.status != 200 
+        Setting.find(@setting.id).destroy
+        render json: { status: 'ERROR', message: "LINEの通知に失敗しました。トークンを再度確認してください。" }
+      else
+        render json: { status: 'SUCCESS', data: @setting }
+      end      
     else
-      render json: { status: 'ERROR', data: setting.errors }
+      render json: { status: 'ERROR', data: @setting.errors }
     end
   end  
 
