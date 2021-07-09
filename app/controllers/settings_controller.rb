@@ -10,7 +10,7 @@ class SettingsController < ApplicationController
   def create
     @setting = Setting.new(post_params)
     if @setting.save
-      connection = Faraday.new(Constants::NOTIFY_API_URL)
+      connection = Faraday.new(Setting::NOTIFY_API_URL)
       res = @setting.first_line_notice(params[:line_notice_token])
       if res.status != 200 
         Setting.find(@setting.id).destroy

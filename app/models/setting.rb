@@ -1,5 +1,6 @@
 class Setting < ApplicationRecord
   belongs_to :user
+
   NOTIFY_API_URL = "https://notify-api.line.me/api/notify"
   INITIAL_LINE_MESSAGE = "LINEのTOKENがセットできました！\r\n次回から買い物や請求時にライン通知をさせることができます！"
  
@@ -17,7 +18,7 @@ class Setting < ApplicationRecord
 
   private
   def line_notice(token, message)
-    connection = Faraday.new(Constants::NOTIFY_API_URL)
+    connection = Faraday.new(NOTIFY_API_URL)
     connection.headers["Authorization"] = "Bearer #{token}"
     connection.params[:message] = message
     connection.post
