@@ -1,5 +1,8 @@
 module Auth
   class RegistrationsController < DeviseTokenAuth::RegistrationsController
+ 
+    # NOTE: devise_token_authのgit hub
+    # https://github.com/lynndylanhurley/devise_token_auth/blob/master/app/controllers/devise_token_auth/registrations_controller.rb
     def create
       build_resource
 
@@ -56,6 +59,10 @@ module Auth
         clean_up_passwords @resource
         render_create_error
       end
+    end
+
+    def sign_up_params
+      params.permit(:name, :email, :password, :password_confirmation)
     end
   end
 end
