@@ -8,8 +8,7 @@ class Setting < ApplicationRecord
     line_notice(token, INITIAL_LINE_MESSAGE)
   end
   
-  def shopping_line_notice(date, price, shop_name, description)
-    token = Setting.first.line_notice_token
+  def shopping_line_notice(date, price, shop_name, description, token)
     line_notice(
       token,
       "\n[買い物連絡]\n購入日： #{date}\n金額： #{price}円\n場所： #{shop_name}\n特記事項： #{description}"

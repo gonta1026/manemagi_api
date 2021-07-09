@@ -9,11 +9,17 @@ class ShoppingsController < ApplicationController
   
   def create
     shopping = Shopping.new(post_params)
-    @setting = Setting.first
     if shopping.save
       shopping_date = FormatDate::yyyy_mm_dd_wd(shopping[:date])
       # NOTE Lineの通知
-      @setting.shopping_line_notice(shopping_date, shopping[:price], shopping.shop.name, shopping[:description])
+      @setting = Setting.new
+      @setting.shopping_line_notice(
+        shopping_date,
+        shopping[:price],
+        shopping.shop.name,
+        shopping[:description],
+        current_user.setting.line_notice_token
+      )
       render json: { status: 'SUCCESS', data: shopping }
     else
       render json: { status: 'ERROR', data: shopping.errors }
