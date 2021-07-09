@@ -11,15 +11,17 @@ class ShoppingsController < ApplicationController
     shopping = Shopping.new(post_params)
     if shopping.save
       shopping_date = FormatDate::yyyy_mm_dd_wd(shopping[:date])
-      # NOTE Lineの通知
       @setting = Setting.new
-      @setting.shopping_line_notice(
-        shopping_date,
-        shopping[:price],
-        shopping.shop.name,
-        shopping[:description],
-        current_user.setting.line_notice_token
-      )
+      if shopping.is_line_notice
+        # NOTE Lineの通知
+        @setting.shopping_line_notice(
+          shopping_date,
+          shopping[:price],
+          shopping.shop.name,
+          shopping[:description],
+          current_user.setting.line_notice_token
+        )
+      end
       render json: { status: 'SUCCESS', data: shopping }
     else
       render json: { status: 'ERROR', data: shopping.errors }
@@ -28,6 +30,6 @@ class ShoppingsController < ApplicationController
 
   private
   def post_params
-    params.require(:shopping).permit(:price, :date, :description, :shop_id).merge(user_id: current_user.id, claim_id: nil)
+    params.require(:shopping).permit(:price, :date, :description, :is_line_notice, :shop_id).merge(user_id: current_user.id, claim_id: nil)
   end
 end
