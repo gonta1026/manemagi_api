@@ -3,10 +3,10 @@ class SettingsController < ApplicationController
   before_action :authenticate_user!, only: [:index, :create]
 
   def index
-    setting = Setting.first
+    setting = current_user.setting
     render json: { status: 'SUCCESS', data: setting }
   end
-  
+
   def create
     @setting = Setting.new(post_params)
     if @setting.save
