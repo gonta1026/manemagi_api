@@ -3,7 +3,8 @@ class ShoppingsController < ApplicationController
   before_action :authenticate_user!, only: [:index, :create]
 
   def index
-    shoppings = Shopping.all
+    order_date =  { date: "ASC" } # TODO ここの順番は後にフロンドのリクエストのよって並び替えの対象を変更できるようにするかもしれない。
+    shoppings = current_user.shoppings.order(order_date)
     render json: { status: 'SUCCESS', data: shoppings }
   end
   
@@ -27,6 +28,12 @@ class ShoppingsController < ApplicationController
       render json: { status: 'ERROR', data: shopping.errors }
     end
   end
+
+  def show
+    shopping = current_user.shoppings.find(params[:id])    
+    render json: { status: 'SUCCESS', data: shopping }
+  end
+  
 
   private
   def post_params
