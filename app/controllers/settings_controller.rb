@@ -4,7 +4,15 @@ class SettingsController < ApplicationController
 
   def index
     setting = current_user.setting
-    render json: { status: 'SUCCESS', data: setting }
+    user = {
+      id: current_user.id,
+      name: current_user.name,
+      setting: { 
+        is_use_line: setting.is_use_line,
+        line_notice_token: setting.line_notice_token
+      }
+    }
+    render json: { status: 'SUCCESS', data: { user: user }}
   end
 
   def create
