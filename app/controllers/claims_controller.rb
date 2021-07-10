@@ -2,7 +2,7 @@ class ClaimsController < ApplicationController
   before_action :authenticate_user!, only: [:index, :create]
 
   def index
-    claims = Claim.all
+    claims = current_user.claims
     render json: { status: 'SUCCESS', data: claims }
   end
   
