@@ -35,10 +35,13 @@ module Auth
         # Fix duplicate e-mails by disabling Devise confirmation e-mail
         @resource.skip_confirmation_notification!
       end
-
-      if @resource.save
+      result = ActiveRecord::Base.transaction do  # BEGIN
+        is_user_save = @resource.save
+        is_setting_save = Setting.new(user_id: @resource.id).save
+      end # COMMIT
+      
+      if result
         yield @resource if block_given?
-
         unless @resource.confirmed?
           # user will require email authentication
           @resource.send_confirmation_instructions({
