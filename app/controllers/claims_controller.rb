@@ -7,7 +7,7 @@ class ClaimsController < ApplicationController
   end
   
   def create
-    shoppings = Shopping.all #sampleとしてallにしている。
+    shoppings = Shopping.find(params[:shopping_ids])
     post_merge_shoppings = post_params.merge(shoppings: shoppings)
     claims = Claim.new(post_merge_shoppings)
     if claims.save
