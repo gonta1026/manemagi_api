@@ -15,22 +15,27 @@ class SettingsController < ApplicationController
     render json: { status: 'SUCCESS', data: { user: user }}
   end
 
-  # ユーザー登録時に合わせて登録させているため一旦コメントアウト
-  # def create
-  #   @setting = Setting.new(post_params)
-  #   if @setting.save
-  #     connection = Faraday.new(Setting::NOTIFY_API_URL)
-  #     res = @setting.first_line_notice(params[:line_notice_token])
-  #     if res.status != 200 
-  #       Setting.find(@setting.id).destroy
-  #       render json: { status: 'ERROR', message: "LINEの通知に失敗しました。トークンを再度確認してください。" }
-  #     else
-  #       render json: { status: 'SUCCESS', data: @setting }
-  #     end      
-  #   else
-  #     render json: { status: 'ERROR', data: @setting.errors }
-  #   end
-  # end  
+  def update
+    @setting = Setting.find(params[:id])
+    if @setting.update(post_params)
+      if !@setting.line_notice_token.nil?
+        response = @setting.line_token_check(@setting.line_notice_token)
+        if response.status != 200
+          # 設定情報のtokenをセットしたらtokenが誤ってエラーになる。
+          render json: { status: 'ERROR', data: response }
+        else
+          # 設定情報のtokenをセットて正常の処理ができた
+          render json: { status: 'SUCCESS', data: @setting }
+        end 
+      else
+        # lineのtokenがセットされていないとき
+        render json: { status: 'SUCCESS', data: @setting }
+      end
+    else
+      # 設定情報の保存に失敗
+      render json: { status: 'ERROR', data: @setting.errors }
+    end
+  end
 
   private
   def post_params

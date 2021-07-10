@@ -8,6 +8,6 @@ Rails.application.routes.draw do
     resources :shops, only: [:index, :create]
     resources :shoppings, only: [:index, :create, :show]
     resources :claims, only: [:index, :create]
-    resources :settings, only: [:index, :create]
+    resources :settings, only: [:index, :create, :update]
   end
 end
