@@ -1,5 +1,5 @@
 class ClaimsController < ApplicationController
-  before_action :authenticate_user!, only: [:index, :create]
+  before_action :authenticate_user!, only: [:index, :create, :shoppings]
 
   def index
     claims = current_user.claims
@@ -17,6 +17,11 @@ class ClaimsController < ApplicationController
     end
   end
 
+  def shoppings
+    claim = Claim.find(params[:id])
+    shoppings = claim.shoppings
+    render json: { status: 'SUCCESS', data: shoppings }
+  end
   private
 
   def post_params

@@ -7,7 +7,11 @@ Rails.application.routes.draw do
     # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
     resources :shops, only: [:index, :create]
     resources :shoppings, only: [:index, :create, :show]
-    resources :claims, only: [:index, :create]
     resources :settings, only: [:index, :create, :update]
+    resources :claims, only: [:index, :create] do
+      member do
+        get :shoppings
+      end
+    end
   end
 end
