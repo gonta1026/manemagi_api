@@ -8,6 +8,7 @@ class SettingsController < ApplicationController
       id: current_user.id,
       name: current_user.name,
       setting: { 
+        id: setting.id,
         is_use_line: setting.is_use_line,
         line_notice_token: setting.line_notice_token
       }
