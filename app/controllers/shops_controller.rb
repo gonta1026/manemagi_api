@@ -1,4 +1,11 @@
 class ShopsController < ApplicationController
+  before_action :authenticate_user!, only: [:index, :create]
+
+  def index
+    shops = current_user.shops
+    render json: { status: 'SUCCESS', data: { shops: shops }}
+  end
+
   def create
     shop = Shop.new(post_params)
     if shop.save
