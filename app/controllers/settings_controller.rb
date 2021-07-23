@@ -18,28 +18,33 @@ class SettingsController < ApplicationController
 
   def update
     @setting = Setting.find(current_user.setting.id)
-    if @setting.update(post_params)
-      if !@setting.line_notice_token.blank?
-        response = @setting.line_token_check(@setting.line_notice_token)
-        if response.status != 200
-          # 設定情報のtokenをセットしたらtokenが誤ってエラーになる。
-          render json: { status: 'ERROR', data: response, message: "invalid_token" }
-        else
-          # 設定情報のtokenをセットて正常の処理ができた
-          render json: { status: 'SUCCESS', data: @setting }
-        end 
-      else
-        # lineのtokenがセットされていないとき
-        render json: { status: 'SUCCESS', data: @setting }
-      end
+    if post_params[:line_notice_token].blank?
+      update_setting(@setting)
+      return # 処理を抜ける。
+    end
+
+    # 空でなければトークンのチェックをする。
+    response = @setting.line_token_check(post_params[:line_notice_token])
+    if response.status != 200
+      # 設定情報のtokenをセットしたらtokenが誤ってエラーになる。
+      render json: { status: 'ERROR', data: response, message: "invalid_token" }
     else
-      # 設定情報の保存に失敗
-      render json: { status: 'ERROR', data: @setting.errors }
+      update_setting(@setting)
     end
   end
 
   private
   def post_params
     params.require(:setting).permit(:is_use_line, :line_notice_token).merge(user_id: current_user.id)
+  end
+
+  def update_setting(setting)
+    if setting.update(post_params)
+      # 設定情報のtokenをセットて正常の処理ができた
+      render json: { status: 'SUCCESS', data: setting }
+    else
+      # 設定情報の保存に失敗
+      render json: { status: 'ERROR', data: setting.errors }
+    end
   end
 end
