@@ -37,7 +37,8 @@ module Auth
       end
       result = ActiveRecord::Base.transaction do  # BEGIN
         is_user_save = @resource.save
-        is_setting_save = Setting.new(user_id: @resource.id).save
+        Setting.new(user_id: @resource.id).save
+        Shop.new(name: "その他", description: "あまり行かない店舗の場合に使用してください。", user_id: @resource.id).save
       end # COMMIT
       
       if result
@@ -66,6 +67,10 @@ module Auth
 
     def sign_up_params
       params.permit(:name, :email, :password, :password_confirmation)
+    end
+
+    def shop_post_params
+      params.require(:shop).permit(:name, :description).merge(user_id: current_user.id)
     end
   end
 end
