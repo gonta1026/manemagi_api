@@ -1,4 +1,4 @@
-members = ["otsuka", "nono", "syun", "fukada", "uirou"]
+members = ["otsuka", "nono", "syun", "fukada", "uirou", "text"]
 members.each do |member|
   user = User.create(
     name: "#{member}",
