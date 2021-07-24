@@ -1,6 +1,6 @@
 class ShoppingsController < ApplicationController
   require "./app/utils/format_date"
-  before_action :authenticate_user!, only: [:index, :create]
+  before_action :authenticate_user!, only: [:index, :create, :show, :edit, :update]
 
   def index
     order_date =  { date: "ASC" } # TODO ここの順番は後にフロンドのリクエストのよって並び替えの対象を変更できるようにするかもしれない。
@@ -34,6 +34,20 @@ class ShoppingsController < ApplicationController
     render json: { status: 'SUCCESS', data: shopping }
   end
   
+  def edit
+    shopping = current_user.shoppings.find(params[:id])    
+    render json: { status: 'SUCCESS', data: shopping }
+  end
+  
+  def update
+    
+    @shopping = current_user.shoppings.find(params[:id])    
+    if @shopping.update(post_params)
+      render json: { status: 'SUCCESS', data: @shopping }
+    else
+      render json: { status: 'ERROR', data: @shopping.errors }
+    end
+  end
 
   private
   def post_params

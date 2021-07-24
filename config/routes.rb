@@ -4,9 +4,9 @@ Rails.application.routes.draw do
     mount_devise_token_auth_for 'User', at: 'auth', controllers: {
       registrations: 'auth/registrations'
   }
-    # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+
     resources :shops, only: [:index, :create]
-    resources :shoppings, only: [:index, :create, :show]
+    resources :shoppings, only: [:index, :create, :show, :edit, :update]
     resources :settings, only: [:index, :create, :update]
     resources :claims, only: [:index, :create] do
       member do
