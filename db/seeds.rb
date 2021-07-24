@@ -14,8 +14,8 @@ members.each do |member|
   )
   
   shop = Shop.create(
-    name: "万台",
-    description: "生鮮品がいい",
+    name: "その他",
+    description: "あまり行かない店舗の場合に使用してください。",
     user_id: user.id
   )
   
