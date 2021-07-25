@@ -23,7 +23,7 @@ members.each do |member|
   5.times do |n|
     shopping = Shopping.create(
       price: 1000 * (n + 1),
-      date: "2021-06-0#{(n + 1)}",
+      date: "2021-07-0#{(n + 1)}",
       description: "説明",
       is_line_notice: false,
       shop_id: shop.id,
@@ -33,12 +33,8 @@ members.each do |member|
   end
   
   claim = Claim.create(
-    is_line_notice: true,
+    is_line_notice: false,
     user_id: user.id,
     shoppings: shoppings
   )
-  
-  # shoppings.each do |shopping|
-  #   shopping.update!(claim_id: claim.id)
-  # end
 end
