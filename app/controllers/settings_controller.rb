@@ -13,7 +13,7 @@ class SettingsController < ApplicationController
         line_notice_token: setting.line_notice_token
       }
     }
-    render json: { status: 'SUCCESS', data: user}
+    render json: { status: 'success', data: user}
   end
 
   def update
@@ -27,7 +27,7 @@ class SettingsController < ApplicationController
     response = @setting.line_token_check(post_params[:line_notice_token])
     if response.status != 200
       # 設定情報のtokenをセットしたらtokenが誤ってエラーになる。
-      render json: { status: 'ERROR', data: response, message: "invalid_token" }
+      render json: { status: 'error', data: response, message: "invalid_token" }
     else
       update_setting(@setting)
     end
@@ -41,10 +41,10 @@ class SettingsController < ApplicationController
   def update_setting(setting)
     if setting.update(post_params)
       # 設定情報のtokenをセットて正常の処理ができた
-      render json: { status: 'SUCCESS', data: setting }
+      render json: { status: 'success', data: setting }
     else
       # 設定情報の保存に失敗
-      render json: { status: 'ERROR', data: setting.errors }
+      render json: { status: 'error', data: setting.errors }
     end
   end
 end

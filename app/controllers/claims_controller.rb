@@ -3,7 +3,7 @@ class ClaimsController < ApplicationController
 
   def index
     claims = current_user.claims
-    render json: { status: 'SUCCESS', data: claims }
+    render json: { status: 'success', data: claims }
   end
   
   def create
@@ -11,16 +11,16 @@ class ClaimsController < ApplicationController
     post_merge_shoppings = post_params.merge(shoppings: shoppings)
     claims = Claim.new(post_merge_shoppings)
     if claims.save
-      render json: { status: 'SUCCESS', data: claims }
+      render json: { status: 'success', data: claims }
     else
-      render json: { status: 'ERROR', data: shopping.errors }
+      render json: { status: 'error', data: shopping.errors }
     end
   end
 
   def shoppings
     claim = Claim.find(params[:id])
     shoppings = claim.shoppings
-    render json: { status: 'SUCCESS', data: shoppings }
+    render json: { status: 'success', data: shoppings }
   end
   private
 

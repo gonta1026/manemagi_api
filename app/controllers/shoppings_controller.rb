@@ -5,7 +5,7 @@ class ShoppingsController < ApplicationController
   def index
     order_date =  { date: "ASC" } # TODO ここの順番は後にフロンドのリクエストのよって並び替えの対象を変更できるようにするかもしれない。
     shoppings = current_user.shoppings.order(order_date)
-    render json: { status: 'SUCCESS', data: shoppings }
+    render json: { status: 'success', data: shoppings }
   end
   
   def create
@@ -23,29 +23,29 @@ class ShoppingsController < ApplicationController
           current_user.setting.line_notice_token
         )
       end
-      render json: { status: 'SUCCESS', data: shopping }
+      render json: { status: 'success', data: shopping }
     else
-      render json: { status: 'ERROR', data: shopping.errors }
+      render json: { status: 'error', data: shopping.errors }
     end
   end
 
   def show
     shopping = current_user.shoppings.find(params[:id])    
-    render json: { status: 'SUCCESS', data: shopping }
+    render json: { status: 'success', data: shopping }
   end
   
   def edit
     shopping = current_user.shoppings.find(params[:id])    
-    render json: { status: 'SUCCESS', data: shopping }
+    render json: { status: 'success', data: shopping }
   end
   
   def update
     
     @shopping = current_user.shoppings.find(params[:id])    
     if @shopping.update(post_params)
-      render json: { status: 'SUCCESS', data: @shopping }
+      render json: { status: 'success', data: @shopping }
     else
-      render json: { status: 'ERROR', data: @shopping.errors }
+      render json: { status: 'error', data: @shopping.errors }
     end
   end
 

@@ -3,15 +3,15 @@ class ShopsController < ApplicationController
 
   def index
     shops = current_user.shops
-    render json: { status: 'SUCCESS', data: { shops: shops }}
+    render json: { status: 'success', data: { shops: shops }}
   end
 
   def create
     shop = Shop.new(post_params)
     if shop.save
-      render json: { status: 'SUCCESS', data: shop }
+      render json: { status: 'success', data: shop }
     else
-      render json: { status: 'ERROR', data: shop.errors }
+      render json: { status: 'error', data: shop.errors }
     end
   end
 
