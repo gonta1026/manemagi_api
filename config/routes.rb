@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     resources :shops, only: [:index, :create]
     resources :shoppings, only: [:index, :create, :show, :edit, :update]
     resources :settings, only: [:index, :create, :update]
-    resources :claims, only: [:index, :create] do
+    resources :claims, only: [:index, :create, :new] do
       member do
         get :shoppings
       end

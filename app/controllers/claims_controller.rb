@@ -1,5 +1,5 @@
 class ClaimsController < ApplicationController
-  before_action :authenticate_user!, only: [:index, :create, :shoppings]
+  before_action :authenticate_user!, only: [:index, :new, :create, :shoppings]
 
   def index
     claims = current_user.claims
@@ -12,6 +12,11 @@ class ClaimsController < ApplicationController
     end
     render json: { status: 'success', data: build_claims }
   end
+
+  def new
+    shoppings = current_user.shoppings.where(claim_id: nil)   
+    render json: { status: 'success', data: shoppings }
+  end
   
   def create
     shoppings = Shopping.find(params[:shopping_ids])
@@ -23,6 +28,7 @@ class ClaimsController < ApplicationController
     end
   end
 
+  # 請求に紐づく買い物一覧画面
   def shoppings
     claim = Claim.find(params[:id])
     shoppings = claim.shoppings
