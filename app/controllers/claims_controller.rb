@@ -20,11 +20,12 @@ class ClaimsController < ApplicationController
   
   def create
     shoppings = Shopping.find(params[:shopping_ids])
+    post_merge_shoppings = post_params.merge(shoppings: shoppings)
     claims = Claim.new(post_merge_shoppings)
     if claims.save
       render json: { status: 'success', data: claims }
     else
-      render json: { status: 'error', data: shopping.errors }
+      render json: { status: 'error', data: claims.errors }
     end
   end
 
@@ -37,5 +38,6 @@ class ClaimsController < ApplicationController
   private
 
   def post_params
+    params.require(:claim).permit(:is_line_notice).merge(user_id: current_user.id)
   end
 end
