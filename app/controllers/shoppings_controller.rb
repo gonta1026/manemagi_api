@@ -1,11 +1,20 @@
 class ShoppingsController < ApplicationController
   require "./app/utils/format_date"
-  before_action :authenticate_user!, only: [:index, :create, :show, :edit, :update]
+  before_action :authenticate_user!, only: [:index, :create, :destroy, :show, :edit, :update]
 
   def index
     order_date =  { date: "ASC" } # TODO ここの順番は後にフロンドのリクエストのよって並び替えの対象を変更できるようにするかもしれない。
     shoppings = current_user.shoppings.order(order_date)
     render json: { status: 'success', data: shoppings }
+  end
+  
+  def destroy
+    shopping = Shopping.find(params[:id])
+    if shopping.destroy
+      render json: { status: 'success', data: shopping }
+    else
+      render json: { status: 'error', data: shopping.errors }
+    end
   end
   
   def create
