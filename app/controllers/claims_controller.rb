@@ -1,4 +1,5 @@
 class ClaimsController < ApplicationController
+  require "./app/utils/format_date"
   before_action :authenticate_user!, only: [:index, :new, :create, :update, :shoppings]
 
   def index
@@ -21,11 +22,27 @@ class ClaimsController < ApplicationController
   def create
     shoppings = Shopping.find(params[:shopping_ids])
     post_merge_shoppings = post_params.merge(shoppings: shoppings)
-    claims = Claim.new(post_merge_shoppings)
-    if claims.save
-      render json: { status: 'success', data: claims }
+    claim = Claim.new(post_merge_shoppings)
+    @setting = Setting.new
+    if claim.save
+      shopping_prices = shoppings.map do | shopping |
+        shopping.price
+      end
+      shopping_prices.sum
+      claim_date = FormatDate::yyyy_mm_dd_wd(claim[:created_at])
+      if claim.is_line_notice
+        # NOTE Lineの通知
+        @setting.claim_line_notice(
+          shoppings,
+          claim_date,
+          shopping_prices.sum,
+          claim[:description],
+          current_user.setting.line_notice_token
+        )
+      end
+      render json: { status: 'success', data: claim }
     else
-      render json: { status: 'error', data: claims.errors }
+      render json: { status: 'error', data: claim.errors }
     end
   end
 
@@ -44,7 +61,7 @@ class ClaimsController < ApplicationController
     shoppings = claim.shoppings
     render json: { status: 'success', data: shoppings }
   end
-  
+
   private
   def post_params
     params.require(:claim).permit(:is_line_notice).merge(user_id: current_user.id)
