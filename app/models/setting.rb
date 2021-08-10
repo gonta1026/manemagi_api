@@ -9,10 +9,10 @@ class Setting < ApplicationRecord
     line_notice(token, message)
   end
 
-  def shopping_line_notice(date, price, shop_name, description, token, title = "")
+  def shopping_line_notice(date, price, shop_name, description, token, title = "登録")
     line_notice(
       token,
-      "\n[買い物登録#{title}連絡]\n購入日： #{date}\n金額： #{price}円\n場所： #{shop_name}\n特記事項： #{description}"
+      "\n[買い物#{title}連絡]\n購入日： #{date}\n金額： #{price}円\n場所： #{shop_name}\n特記事項： #{description}"
     )
   end
     
