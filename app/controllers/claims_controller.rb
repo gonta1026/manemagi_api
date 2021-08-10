@@ -28,7 +28,6 @@ class ClaimsController < ApplicationController
       shopping_prices = shoppings.map do | shopping |
         shopping.price
       end
-      shopping_prices.sum
       claim_date = FormatDate::yyyy_mm_dd_wd(claim[:created_at])
       if claim.is_line_notice
         # NOTE Lineの通知
@@ -47,8 +46,20 @@ class ClaimsController < ApplicationController
   end
 
   def update  
-    @claim = current_user.claims.find(params[:id])    
+    @claim = current_user.claims.find(params[:id])   
     if @claim.update(update_params)
+      if @claim.is_line_notice
+        updated_at = FormatDate::yyyy_mm_dd_wd(@claim[:updated_at])
+        shopping_prices = @claim.shoppings.map do | shopping |
+          shopping.price
+        end
+        @setting = Setting.new
+        @setting.claim_receipt_line_notice(
+          updated_at,
+          shopping_prices.sum,
+          current_user.setting.line_notice_token
+        )
+      end
       render json: { status: 'success', data: @claim }
     else
       render json: { status: 'error', data: @claim.errors }
@@ -68,6 +79,6 @@ class ClaimsController < ApplicationController
   end
 
   def update_params
-    params.require(:claim).permit(:is_get_claim)
+    params.require(:claim).permit(:is_receipt, :is_line_notice)
   end
 end

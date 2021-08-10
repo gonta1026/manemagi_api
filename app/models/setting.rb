@@ -28,6 +28,13 @@ class Setting < ApplicationRecord
     )
   end
 
+  def claim_receipt_line_notice(updated_at, total_price, token)
+    line_notice(
+      token,
+      "\n[請求受領確認]\n確認日： #{updated_at}\n金額： #{total_price}円\n"
+    )
+  end
+
   def line_token_check(token)
     connection = Faraday.new("#{NOTIFY_API_URL}/status")
     connection.headers["Authorization"] = "Bearer #{token}"
