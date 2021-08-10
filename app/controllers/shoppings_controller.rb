@@ -3,8 +3,8 @@ class ShoppingsController < ApplicationController
   before_action :authenticate_user!, only: [:index, :create, :destroy, :show, :edit, :update]
 
   def index
-    order_date =  { date: "ASC" } # TODO ここの順番は後にフロンドのリクエストのよって並び替えの対象を変更できるようにするかもしれない。
-    shoppings = current_user.shoppings.order(order_date)
+    order_date =  { date: "DESC" } # TODO ここの順番は後にフロンドのリクエストのよって並び替えの対象を変更できるようにするかもしれない。
+    shoppings = current_user.shoppings.order(date: "DESC")
     render json: { status: 'success', data: shoppings }
   end
   

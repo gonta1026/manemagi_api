@@ -3,7 +3,7 @@ class ClaimsController < ApplicationController
   before_action :authenticate_user!, only: [:index, :new, :create, :update, :shoppings]
 
   def index
-    claims = current_user.claims
+    claims = current_user.claims.order(created_at: "DESC")
     build_claims = claims.map do | claim |
       total_price = 0
       claim.shoppings.each do | shopping |
@@ -15,7 +15,7 @@ class ClaimsController < ApplicationController
   end
 
   def new
-    shoppings = current_user.shoppings.where(claim_id: nil)   
+    shoppings = current_user.shoppings.where(claim_id: nil).order(date: "DESC")
     render json: { status: 'success', data: shoppings }
   end
   
@@ -58,7 +58,7 @@ class ClaimsController < ApplicationController
   # 請求に紐づく買い物一覧画面
   def shoppings
     claim = Claim.find(params[:id])
-    shoppings = claim.shoppings
+    shoppings = claim.shoppings.order(date: "DESC")
     render json: { status: 'success', data: shoppings }
   end
 
