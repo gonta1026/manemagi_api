@@ -11,6 +11,18 @@ class ShoppingsController < ApplicationController
   def destroy
     shopping = Shopping.find(params[:id])
     if shopping.destroy
+      if (params["is_line_notice"])
+        shopping_date = FormatDate::yyyy_mm_dd_wd(shopping[:date])
+        @setting = Setting.new
+        @setting.shopping_line_notice(
+          shopping_date,
+          shopping[:price],
+          shopping.shop.name,
+          shopping[:description],
+          current_user.setting.line_notice_token,
+          "削除"
+        )
+      end
       render json: { status: 'success', data: shopping }
     else
       render json: { status: 'error', data: shopping.errors }
