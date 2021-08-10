@@ -61,12 +61,24 @@ class ShoppingsController < ApplicationController
   end
   
   def update
-    
-    @shopping = current_user.shoppings.find(params[:id])    
-    if @shopping.update(post_params)
-      render json: { status: 'success', data: @shopping }
+    shopping = current_user.shoppings.find(params[:id])    
+    if shopping.update(post_params)
+      shopping_date = FormatDate::yyyy_mm_dd_wd(shopping[:date])
+      @setting = Setting.new
+      if shopping.is_line_notice
+        # NOTE Lineの通知
+        @setting.shopping_line_notice(
+          shopping_date,
+          shopping[:price],
+          shopping.shop.name,
+          shopping[:description],
+          current_user.setting.line_notice_token,
+          "内容変更"
+        )
+      end
+      render json: { status: 'success', data: shopping }
     else
-      render json: { status: 'error', data: @shopping.errors }
+      render json: { status: 'error', data: shopping.errors }
     end
   end
 
