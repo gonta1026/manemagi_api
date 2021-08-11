@@ -14,6 +14,8 @@ ActiveRecord::Schema.define(version: 2021_06_25_145959) do
 
   create_table "claims", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.boolean "is_line_notice", default: false, null: false
+    t.boolean "is_line_noticed", default: false, null: false
+    t.boolean "is_receipt_line_noticed", default: false, null: false
     t.boolean "is_receipt", default: false, null: false
     t.bigint "user_id"
     t.datetime "created_at", precision: 6, null: false
@@ -35,6 +37,7 @@ ActiveRecord::Schema.define(version: 2021_06_25_145959) do
     t.text "description"
     t.datetime "date", null: false
     t.boolean "is_line_notice", default: false, null: false
+    t.boolean "is_line_noticed", default: false, null: false
     t.bigint "user_id", null: false
     t.bigint "shop_id", null: false
     t.bigint "claim_id"

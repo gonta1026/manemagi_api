@@ -31,6 +31,9 @@ class ShoppingsController < ApplicationController
   
   def create
     shopping = Shopping.new(post_params)
+    if !shopping.is_line_noticed && shopping.is_line_notice
+       shopping.is_line_noticed = true
+    end
     if shopping.save
       shopping_date = FormatDate::yyyy_mm_dd_wd(shopping[:date])
       @setting = Setting.new
@@ -61,7 +64,10 @@ class ShoppingsController < ApplicationController
   end
   
   def update
-    shopping = current_user.shoppings.find(params[:id])    
+    shopping = current_user.shoppings.find(params[:id])
+    if !shopping.is_line_noticed && shopping.is_line_notice
+      shopping.is_line_noticed = true
+    end
     if shopping.update(post_params)
       shopping_date = FormatDate::yyyy_mm_dd_wd(shopping[:date])
       @setting = Setting.new

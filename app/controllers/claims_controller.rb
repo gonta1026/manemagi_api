@@ -23,6 +23,9 @@ class ClaimsController < ApplicationController
     shoppings = Shopping.find(params[:shopping_ids])
     post_merge_shoppings = post_params.merge(shoppings: shoppings)
     claim = Claim.new(post_merge_shoppings)
+    if !claim.is_line_noticed && claim.is_line_notice
+      claim.is_line_noticed = true
+    end
     @setting = Setting.new
     if claim.save
       shopping_prices = shoppings.map do | shopping |
@@ -46,11 +49,14 @@ class ClaimsController < ApplicationController
   end
 
   def update  
-    @claim = current_user.claims.find(params[:id])   
-    if @claim.update(update_params)
-      if @claim.is_line_notice
-        updated_at = FormatDate::yyyy_mm_dd_wd(@claim[:updated_at])
-        shopping_prices = @claim.shoppings.map do | shopping |
+    claim = current_user.claims.find(params[:id])
+    if !claim.is_receipt_line_noticed && claim.is_line_notice
+      claim.is_receipt_line_noticed = true
+    end
+    if claim.update(update_params)
+      if claim.is_line_notice
+        updated_at = FormatDate::yyyy_mm_dd_wd(claim[:updated_at])
+        shopping_prices = claim.shoppings.map do | shopping |
           shopping.price
         end
         @setting = Setting.new
@@ -60,9 +66,9 @@ class ClaimsController < ApplicationController
           current_user.setting.line_notice_token
         )
       end
-      render json: { status: 'success', data: @claim }
+      render json: { status: 'success', data: claim }
     else
-      render json: { status: 'error', data: @claim.errors }
+      render json: { status: 'error', data: claim.errors }
     end
   end
 
