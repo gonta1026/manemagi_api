@@ -3,7 +3,7 @@ class ShopsController < ApplicationController
 
   def index
     shops = current_user.shops
-    render json: { status: 'success', data: { shops: shops }}
+    render json: { status: 'success', data: shops}
   end
 
   def create
