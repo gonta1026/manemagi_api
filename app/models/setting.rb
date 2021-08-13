@@ -31,7 +31,16 @@ class Setting < ApplicationRecord
   def claim_receipt_line_notice(updated_at, total_price, token)
     line_notice(
       token,
-      "\n[請求受領確認]\n確認日： #{updated_at}\n金額： #{total_price}円\n"
+      "\n[請求受領]\n削除日： #{updated_at}\n金額： #{total_price}円\n"
+    )
+  end
+  
+  def delete_claim_line_notice(total_price, token)
+    require 'date'
+    today = FormatDate::yyyy_mm_dd_wd(Date.today)
+    line_notice(
+      token,
+      "\n[請求削除]\n確認日： #{today}\n金額： #{total_price}円\n"
     )
   end
 

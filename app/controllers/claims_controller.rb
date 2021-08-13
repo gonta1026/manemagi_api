@@ -1,6 +1,6 @@
 class ClaimsController < ApplicationController
   require "./app/utils/format_date"
-  before_action :authenticate_user!, only: [:index, :new, :create, :update, :shoppings]
+  before_action :authenticate_user!, only: [:index, :new, :create, :update, :destroy, :shoppings,]
 
   def index
     claims = current_user.claims.order(created_at: "DESC")
@@ -72,6 +72,26 @@ class ClaimsController < ApplicationController
     end
   end
 
+  def destroy
+    # binding.pry
+    claim = current_user.claims.find(params[:id])
+    shopping_prices = claim.shoppings.map do | shopping |
+      shopping.price
+    end
+    if claim.destroy
+      if params["is_line_notice"]
+        @setting = Setting.new
+        @setting.delete_claim_line_notice(
+          shopping_prices.sum,
+          current_user.setting.line_notice_token
+        )
+      end
+      render json: { status: 'success', data: claim }
+    else
+      render json: { status: 'error', data: claim.errors }
+    end
+  end
+
   # 請求に紐づく買い物一覧画面
   def shoppings
     claim = Claim.find(params[:id])
@@ -86,5 +106,9 @@ class ClaimsController < ApplicationController
 
   def update_params
     params.require(:claim).permit(:is_receipt, :is_line_notice)
+  end
+ 
+  def delete_params
+    params.require(:claim).permit(:is_line_notice)
   end
 end
