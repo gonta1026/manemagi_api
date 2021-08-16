@@ -7,6 +7,7 @@ class SettingsController < ApplicationController
     user = {
       id: current_user.id,
       name: current_user.name,
+      email: current_user.email,
       setting: { 
         id: setting.id,
         is_use_line: setting.is_use_line,
